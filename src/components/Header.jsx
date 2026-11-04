@@ -4,12 +4,12 @@ import {
   MapPin,
   Search,
   Scale,
-  ShoppingBag,
+  ArrowLeftRight,
   Store,
-  FileText,
+  Info,
   PlusCircle,
   TrendingDown,
-  Sparkles,
+  Activity,
 } from 'lucide-react';
 
 export default function Header({ onOpenContributeModal }) {
@@ -17,27 +17,25 @@ export default function Header({ onOpenContributeModal }) {
     markets,
     currentMarketId,
     setCurrentMarketId,
-    currentMarket,
     searchTerm,
     setSearchTerm,
     activeTab,
     setActiveTab,
-    basket,
   } = useMarket();
-
-  const totalBasketCount = basket.reduce((acc, item) => acc + (item.quantity > 0 ? 1 : 0), 0);
 
   return (
     <header className="header-container">
-      {/* Top Banner Notice */}
+      {/* Top Notice Bar */}
       <div className="top-announcement-bar">
         <div className="announcement-content">
-          <span className="badge-vjti">VJTI Innovation Project</span>
+          <span className="badge-pure-info">
+            <Activity size={12} /> 100% Non-Commercial Price Tracker
+          </span>
           <span className="announcement-text">
-            <strong>FairPrice:</strong> Community-driven transparent pricing for Mumbai local markets. Stop overpaying, end bargaining discomfort.
+            <strong>FairPrice</strong> does not sell anything — we track live daily grocery prices across local street markets to prevent overpaying.
           </span>
           <span className="announcement-city">
-            <span className="live-dot"></span> Mumbai Active
+            <span className="live-dot"></span> Mumbai Markets Live
           </span>
         </div>
       </div>
@@ -47,21 +45,20 @@ export default function Header({ onOpenContributeModal }) {
         <div className="navbar-left">
           <div className="brand-logo" onClick={() => setActiveTab('board')} role="button" tabIndex={0}>
             <div className="logo-icon-wrapper">
-              <span className="moneybag-emoji">🛍️</span>
-              <span className="rupee-chip">₹</span>
+              <span className="brand-icon-symbol">₹</span>
             </div>
             <div className="brand-text">
               <div className="brand-title-row">
                 <span className="brand-name">FairPrice</span>
-                <span className="brand-version">v1.0</span>
+                <span className="brand-tag">Live Rates</span>
               </div>
-              <span className="brand-tagline">Bridging the Gaps • Transparent Pricing</span>
+              <span className="brand-tagline">Local Grocery Price Intelligence</span>
             </div>
           </div>
 
           {/* Market Selector */}
           <div className="market-selector-wrapper">
-            <MapPin size={18} className="market-pin-icon" />
+            <MapPin size={17} className="market-pin-icon" />
             <select
               id="market-select"
               aria-label="Select Market"
@@ -83,7 +80,7 @@ export default function Header({ onOpenContributeModal }) {
           <Search size={18} className="search-icon" />
           <input
             type="text"
-            placeholder="Search produce (e.g. Tomato, Pyaaz, Palak, Apple)..."
+            placeholder="Search groceries (e.g. Tomato, Onion, Potato, Palak, Apple)..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
@@ -119,42 +116,41 @@ export default function Header({ onOpenContributeModal }) {
           className={`nav-tab-btn ${activeTab === 'board' ? 'active' : ''}`}
           onClick={() => setActiveTab('board')}
         >
-          <TrendingDown size={18} />
-          <span>Daily Rates</span>
+          <TrendingDown size={17} />
+          <span>Dynamic Rates</span>
+        </button>
+
+        <button
+          className={`nav-tab-btn ${activeTab === 'compare' ? 'active' : ''}`}
+          onClick={() => setActiveTab('compare')}
+        >
+          <ArrowLeftRight size={17} />
+          <span>Compare Markets</span>
+          <span className="tab-pill-highlight">Side-by-Side</span>
         </button>
 
         <button
           className={`nav-tab-btn ${activeTab === 'checker' ? 'active' : ''}`}
           onClick={() => setActiveTab('checker')}
         >
-          <Scale size={18} />
-          <span>Fair Price Checker</span>
-          <span className="tab-pill-introvert">Introvert Guide</span>
-        </button>
-
-        <button
-          className={`nav-tab-btn ${activeTab === 'basket' ? 'active' : ''}`}
-          onClick={() => setActiveTab('basket')}
-        >
-          <ShoppingBag size={18} />
-          <span>My Basket</span>
-          {totalBasketCount > 0 && <span className="tab-counter">{totalBasketCount}</span>}
+          <Scale size={17} />
+          <span>Fair Price Verifier</span>
         </button>
 
         <button
           className={`nav-tab-btn ${activeTab === 'vendors' ? 'active' : ''}`}
           onClick={() => setActiveTab('vendors')}
         >
-          <Store size={18} />
-          <span>Local Shops & Reviews</span>
+          <Store size={17} />
+          <span>Local Stalls & Feedback</span>
         </button>
 
         <button
-          className={`nav-tab-btn ${activeTab === 'proposal' ? 'active' : ''}`}
-          onClick={() => setActiveTab('proposal')}
+          className={`nav-tab-btn ${activeTab === 'about' ? 'active' : ''}`}
+          onClick={() => setActiveTab('about')}
         >
-          <FileText size={18} />
-          <span>VJTI Proposal</span>
+          <Info size={17} />
+          <span>About Project</span>
         </button>
       </nav>
     </header>

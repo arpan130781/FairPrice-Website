@@ -5,9 +5,8 @@ import {
   CheckCircle,
   AlertTriangle,
   XCircle,
-  ArrowRight,
+  ArrowLeftRight,
   MessageCircle,
-  ShoppingBag,
   Sparkles,
   Copy,
   Check,
@@ -21,7 +20,8 @@ export default function FairPriceChecker({ onOpenContributeModal }) {
     currentMarketId,
     selectedProduceForChecker,
     setSelectedProduceForChecker,
-    addToBasket,
+    setSelectedProduceForCompare,
+    setActiveTab,
     showToast,
   } = useMarket();
 
@@ -42,7 +42,6 @@ export default function FairPriceChecker({ onOpenContributeModal }) {
   const quote = parseFloat(quotedPrice) || 0;
   const qty = parseFloat(quantity) || 1;
 
-  // Comparison metrics
   const avg = priceInfo.avg;
   const min = priceInfo.min;
   const max = priceInfo.max;
@@ -51,41 +50,40 @@ export default function FairPriceChecker({ onOpenContributeModal }) {
   const percentDiff = avg > 0 ? Math.round(((quote - avg) / avg) * 100) : 0;
   const totalExtraPaid = Math.max(0, Math.round(diffFromAvg * qty * 10) / 10);
 
-  // Verdict evaluation
   let verdict = {
     level: 'fair',
-    title: 'Fair Price',
-    color: '#2563EB',
-    bg: '#EFF6FF',
+    title: 'Fair Market Rate',
+    color: '#0891B2',
+    bg: '#ECFEFF',
     badgeClass: 'verdict-fair',
     icon: CheckCircle,
-    summary: `Quote is reasonable and matches today's ${currentMarket.name} average.`,
-    recommendedAction: 'Safe to buy directly! No need to negotiate.',
+    summary: `Quote is reasonable and closely matches today's ${currentMarket.name} average.`,
+    recommendedAction: 'Fair price for street retail. Safe to buy without hesitation.',
     counterOffer: quote,
   };
 
   if (quote <= min) {
     verdict = {
       level: 'great',
-      title: 'Steal Deal! (Below Wholesale Floor)',
+      title: 'Steal Deal! (Wholesale Floor Rate)',
       color: '#059669',
       bg: '#ECFDF5',
       badgeClass: 'verdict-great',
       icon: Sparkles,
-      summary: `This quote is ₹${Math.abs(diffFromAvg)} below market average (${Math.abs(percentDiff)}% cheaper)!`,
-      recommendedAction: 'Excellent price. Check produce freshness before bagging.',
+      summary: `Quote is ₹${Math.abs(diffFromAvg)} below retail average (${Math.abs(percentDiff)}% cheaper)!`,
+      recommendedAction: 'Excellent price. Verify produce freshness before purchase.',
       counterOffer: quote,
     };
   } else if (quote <= avg * 1.06) {
     verdict = {
       level: 'fair',
-      title: 'Fair & Transparent Rate',
-      color: '#2563EB',
-      bg: '#EFF6FF',
+      title: 'Fair & Transparent Price',
+      color: '#0891B2',
+      bg: '#ECFEFF',
       badgeClass: 'verdict-fair',
       icon: CheckCircle,
       summary: `Within ₹${Math.abs(diffFromAvg)} of today's average (₹${avg}/${selectedItem?.unit}).`,
-      recommendedAction: 'Fair price for retail street vendors. Buy comfortably.',
+      recommendedAction: 'Standard retail street rate. Buy comfortably.',
       counterOffer: Math.round(avg),
     };
   } else if (quote <= avg * 1.25) {
@@ -96,7 +94,7 @@ export default function FairPriceChecker({ onOpenContributeModal }) {
       bg: '#FFFBEB',
       badgeClass: 'verdict-mild',
       icon: AlertTriangle,
-      summary: `Quoted ₹${diffFromAvg} above today's average. You'd pay ₹${totalExtraPaid} extra for ${qty} ${selectedItem?.unit}.`,
+      summary: `Quoted ₹${diffFromAvg} above today's average. You would pay ₹${totalExtraPaid} extra for ${qty} ${selectedItem?.unit}.`,
       recommendedAction: `Ask politely for ₹${Math.round(avg)}/${selectedItem?.unit}.`,
       counterOffer: Math.round(avg),
     };
@@ -108,17 +106,16 @@ export default function FairPriceChecker({ onOpenContributeModal }) {
       bg: '#FEF2F2',
       badgeClass: 'verdict-high',
       icon: XCircle,
-      summary: `High quote! Market average is ₹${avg}/${selectedItem?.unit}, cap is ₹${max}. You would overpay by ₹${totalExtraPaid}.`,
-      recommendedAction: `Firmly counter at ₹${Math.round(avg)} or check the next stall.`,
+      summary: `High quote! Market average is ₹${avg}/${selectedItem?.unit}, ceiling is ₹${max}. You would overpay by ₹${totalExtraPaid}.`,
+      recommendedAction: `Counter at ₹${Math.round(avg)} or check neighbouring stalls.`,
       counterOffer: Math.round(avg),
     };
   }
 
-  // Introvert-friendly scripts
   const scripts = {
     hinglish: `Bhaiya, aaj ${currentMarket.name} mein ${selectedItem?.name.split(' ')[0]} ka rate ₹${priceInfo.min}-₹${avg} chal raha hai. ₹${verdict.counterOffer} mein de dijiye na please, regular customer hoon.`,
     marathi: `Bhau, aaja ${currentMarket.name} madhe ${selectedItem?.name.split(' ')[0]} cha rate ₹${avg} aahe. ₹${verdict.counterOffer} madhe dya na, roz yeto ithe.`,
-    english: `Excuse me brother, the current market average here is ₹${avg} per ${selectedItem?.unit}. Can we do ₹${verdict.counterOffer} for ${qty} ${selectedItem?.unit}?`,
+    english: `Excuse me brother, the current market average here is around ₹${avg} per ${selectedItem?.unit}. Can we do ₹${verdict.counterOffer} for ${qty} ${selectedItem?.unit}?`,
   };
 
   const handleCopy = (text, lang) => {
@@ -128,16 +125,21 @@ export default function FairPriceChecker({ onOpenContributeModal }) {
     setTimeout(() => setCopiedLang(null), 2500);
   };
 
+  const handleCompareThis = () => {
+    setSelectedProduceForCompare(selectedItem.id);
+    setActiveTab('compare');
+  };
+
   return (
     <div className="checker-container">
       {/* Intro Header */}
       <div className="checker-header-card">
         <div className="checker-badge">
-          <Scale size={18} /> Introvert-Friendly Bargaining Guide
+          <Scale size={17} /> Live Quote Verifier & Introvert Guide
         </div>
-        <h2>Instant Fair Price Checker</h2>
+        <h2>Is the Vendor's Quote Fair?</h2>
         <p>
-          Never feel awkward at the market again. Type what the vendor quoted you to instantly see if it's fair, what counter-offer to make, and exactly what to say politely.
+          Type the price quoted to you by a vendor at <strong>{currentMarket.name}</strong>. We instantly verify whether it's fair, tell you the exact counter-offer, and provide polite dialogue scripts.
         </p>
       </div>
 
@@ -149,7 +151,7 @@ export default function FairPriceChecker({ onOpenContributeModal }) {
           {/* Select Produce */}
           <div className="form-group">
             <label htmlFor="produce-picker" className="form-label">
-              Select Produce / Item:
+              Select Grocery / Produce Item:
             </label>
             <select
               id="produce-picker"
@@ -159,7 +161,7 @@ export default function FairPriceChecker({ onOpenContributeModal }) {
             >
               {produceList.map((item) => (
                 <option key={item.id} value={item.id}>
-                  {item.emoji} {item.name} ({item.hindiName}) — ₹{item.prices[currentMarketId]?.avg || 30}/{item.unit}
+                  {item.emoji} {item.name} ({item.hindiName}) — current avg: ₹{item.prices[currentMarketId]?.avg || 30}/{item.unit}
                 </option>
               ))}
             </select>
@@ -204,7 +206,7 @@ export default function FairPriceChecker({ onOpenContributeModal }) {
           {/* Quantity */}
           <div className="form-group">
             <label htmlFor="qty-input" className="form-label">
-              Quantity you want to buy:
+              Quantity you intend to buy:
             </label>
             <div className="qty-input-row">
               <input
@@ -252,7 +254,7 @@ export default function FairPriceChecker({ onOpenContributeModal }) {
                 <verdict.icon size={28} />
               </div>
               <div className="verdict-text-block">
-                <span className="verdict-label-tag">FairPrice Verdict</span>
+                <span className="verdict-label-tag">Analysis Result</span>
                 <h3 className="verdict-title">{verdict.title}</h3>
               </div>
             </div>
@@ -293,8 +295,8 @@ export default function FairPriceChecker({ onOpenContributeModal }) {
             <div className="scripts-card-header">
               <MessageCircle size={18} className="script-icon" />
               <div>
-                <h4>What to say to the vendor (No pressure, respectful)</h4>
-                <p>Tap copy to memorize or read comfortably.</p>
+                <h4>What to say to the vendor (Polite, no conflict)</h4>
+                <p>Tap copy to speak with calm confidence.</p>
               </div>
             </div>
 
@@ -342,14 +344,11 @@ export default function FairPriceChecker({ onOpenContributeModal }) {
               </div>
             </div>
 
-            {/* Quick Actions */}
+            {/* Cross Market Link */}
             <div className="checker-actions-footer">
-              <button
-                className="btn-add-to-basket-fair"
-                onClick={() => addToBasket(selectedItem?.id, qty)}
-              >
-                <ShoppingBag size={16} />
-                <span>Add {qty} {selectedItem?.unit} to Basket</span>
+              <button className="btn-checker-compare-link" onClick={handleCompareThis}>
+                <ArrowLeftRight size={16} />
+                <span>Compare {selectedItem?.name} across other markets</span>
               </button>
             </div>
           </div>

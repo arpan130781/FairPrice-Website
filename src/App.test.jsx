@@ -12,15 +12,16 @@ describe('FairPrice Application Suite', () => {
     render(<App />);
 
     expect(screen.getAllByText('FairPrice').length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Bridging the Gaps/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Local Grocery Price Intelligence/i)).toBeInTheDocument();
     expect(screen.getAllByText(/Dadar Market/i).length).toBeGreaterThan(0);
-    expect(screen.getByText(/Verified Today's Mandai Rates/i)).toBeInTheDocument();
+    expect(screen.getByText(/Real-Time Mandai & Street Rates/i)).toBeInTheDocument();
+    expect(screen.getByText(/does not sell anything/i)).toBeInTheDocument();
   });
 
   test('allows searching for produce by name', () => {
     render(<App />);
 
-    const searchInput = screen.getByPlaceholderText(/Search produce/i);
+    const searchInput = screen.getByPlaceholderText(/Search groceries/i);
     fireEvent.change(searchInput, { target: { value: 'Tomato' } });
 
     expect(screen.getByText(/Tomato \(Hybrid \/ Local\)/i)).toBeInTheDocument();
@@ -36,55 +37,56 @@ describe('FairPrice Application Suite', () => {
     expect(screen.getByText(/Banana \(Robusta \/ Elaichi\)/i)).toBeInTheDocument();
   });
 
-  test('switches to Fair Price Checker tab and calculates quote verdict', () => {
+  test('switches to Compare Markets tab and displays side-by-side comparison', () => {
     render(<App />);
 
-    const checkerTab = screen.getByRole('button', { name: /Fair Price Checker/i });
+    const compareTab = screen.getAllByRole('button', { name: /Compare Markets/i })[0];
+    fireEvent.click(compareTab);
+
+    expect(screen.getByText(/Cross-Market Price Comparison/i)).toBeInTheDocument();
+    expect(screen.getByText(/Lowest Market Today/i)).toBeInTheDocument();
+    expect(screen.getByText(/Mumbai City Average/i)).toBeInTheDocument();
+  });
+
+  test('switches to Fair Price Verifier tab and calculates quote verdict', () => {
+    render(<App />);
+
+    const checkerTab = screen.getByRole('button', { name: /Fair Price Verifier/i });
     fireEvent.click(checkerTab);
 
-    expect(screen.getByText(/Instant Fair Price Checker/i)).toBeInTheDocument();
-    expect(screen.getByText(/Introvert-Friendly Bargaining Guide/i)).toBeInTheDocument();
+    expect(screen.getByText(/Is the Vendor's Quote Fair\?/i)).toBeInTheDocument();
+    expect(screen.getByText(/Live Quote Verifier & Introvert Guide/i)).toBeInTheDocument();
     expect(screen.getByText(/What did the vendor quote you\?/i)).toBeInTheDocument();
 
-    // Verify script suggestions exist
     expect(screen.getByText(/Hinglish \/ Hindi/i)).toBeInTheDocument();
     expect(screen.getByText(/Marathi/i)).toBeInTheDocument();
     expect(screen.getByText(/English/i)).toBeInTheDocument();
   });
 
-  test('switches to My Basket tab and shows total budget estimate', () => {
+  test('switches to Local Stalls & Feedback tab', () => {
     render(<App />);
 
-    const basketTab = screen.getByRole('button', { name: /My Basket/i });
-    fireEvent.click(basketTab);
-
-    expect(screen.getByText(/Daily Shopping Basket & Budget Estimator/i)).toBeInTheDocument();
-    expect(screen.getByText(/Market Bill Estimate/i)).toBeInTheDocument();
-    expect(screen.getByText(/Recommended Fair Target/i)).toBeInTheDocument();
-  });
-
-  test('switches to Local Shops & Reviews tab', () => {
-    render(<App />);
-
-    const vendorsTab = screen.getByRole('button', { name: /Local Shops & Reviews/i });
+    const vendorsTab = screen.getByRole('button', { name: /Local Stalls & Feedback/i });
     fireEvent.click(vendorsTab);
 
     expect(screen.getByText(/Local Vendors & Fair-Price Trust Directory/i)).toBeInTheDocument();
     expect(screen.getByText(/Rameshwar Vegetable Stall/i)).toBeInTheDocument();
   });
 
-  test('switches to VJTI Proposal tab and displays Arpan Gupta academic credits', () => {
+  test('switches to About Project tab and shows Arpan Kailash Gupta individual credits with zero VJTI mention', () => {
     render(<App />);
 
-    const proposalTab = screen.getByRole('button', { name: /VJTI Proposal/i });
-    fireEvent.click(proposalTab);
+    const aboutTab = screen.getByRole('button', { name: /About Project/i });
+    fireEvent.click(aboutTab);
 
-    expect(
-      screen.getByText(/VEERMATA JIJABAI TECHNOLOGICAL INSTITUTE, MUMBAI/i)
-    ).toBeInTheDocument();
+    expect(screen.getAllByText(/Individual Open-Data Initiative/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Arpan Kailash Gupta/i).length).toBeGreaterThan(0);
-    expect(screen.getByText(/Prof. Chandreshekhar/i)).toBeInTheDocument();
-    expect(screen.getByText(/SWOT Analysis \(from VJTI Report\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Why FairPrice Will Never Sell or Deliver Anything/i)).toBeInTheDocument();
+
+    // Verify VJTI, TY Electrical, and Chandreshekhar are completely absent
+    expect(screen.queryByText(/VJTI/i)).toBeNull();
+    expect(screen.queryByText(/TY Electrical/i)).toBeNull();
+    expect(screen.queryByText(/Chandreshekhar/i)).toBeNull();
   });
 
   test('allows changing selected market from dropdown', () => {

@@ -4,10 +4,9 @@ import { MARKETS, PRODUCE_ITEMS, VENDORS } from '../data/initialData';
 const MarketContext = createContext();
 
 const STORAGE_KEYS = {
-  PRODUCE: 'fairprice_produce_data_v1',
-  VENDORS: 'fairprice_vendors_data_v1',
-  BASKET: 'fairprice_basket_v1',
-  MARKET: 'fairprice_selected_market_v1',
+  PRODUCE: 'fairprice_produce_data_v2',
+  VENDORS: 'fairprice_vendors_data_v2',
+  MARKET: 'fairprice_selected_market_v2',
 };
 
 export function MarketProvider({ children }) {
@@ -39,27 +38,11 @@ export function MarketProvider({ children }) {
     return VENDORS;
   });
 
-  const [basket, setBasket] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.BASKET);
-      if (saved) {
-        return JSON.parse(saved);
-      }
-    } catch (e) {
-      console.warn('Failed to parse saved basket data', e);
-    }
-    return [
-      { produceId: 'potato', quantity: 2 },
-      { produceId: 'onion', quantity: 1 },
-      { produceId: 'tomato', quantity: 1.5 },
-      { produceId: 'coriander', quantity: 1 },
-    ];
-  });
-
-  const [activeTab, setActiveTab] = useState('board'); // 'board' | 'checker' | 'basket' | 'vendors' | 'proposal'
+  const [activeTab, setActiveTab] = useState('board'); // 'board' | 'compare' | 'checker' | 'vendors' | 'about'
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [selectedProduceForChecker, setSelectedProduceForChecker] = useState('tomato');
+  const [selectedProduceForCompare, setSelectedProduceForCompare] = useState('tomato');
   const [toast, setToast] = useState(null);
 
   // Sync to localStorage
@@ -74,10 +57,6 @@ export function MarketProvider({ children }) {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.VENDORS, JSON.stringify(vendorsList));
   }, [vendorsList]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.BASKET, JSON.stringify(basket));
-  }, [basket]);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type, id: Date.now() });
@@ -111,7 +90,6 @@ export function MarketProvider({ children }) {
 
         const newMin = Math.min(currentPrices.min, numericPrice);
         const newMax = Math.max(currentPrices.max, numericPrice);
-        // Weighted average with new report
         const newAvg = Math.round(((currentPrices.avg * 2 + numericPrice) / 3) * 10) / 10;
 
         const updatedPrices = {
@@ -125,7 +103,6 @@ export function MarketProvider({ children }) {
           },
         };
 
-        // Add or update shop rate
         let updatedShops = [...(item.shops || [])];
         if (stallName) {
           const existingShopIndex = updatedShops.findIndex(
@@ -158,43 +135,8 @@ export function MarketProvider({ children }) {
       });
     });
 
-    showToast(`✅ Thank you! Today's rate for ₹${numericPrice} recorded for ${getMarket(marketId).name}.`);
+    showToast(`✅ Today's rate of ₹${numericPrice} updated for ${getMarket(marketId).name}!`);
     return true;
-  };
-
-  const addToBasket = (produceId, quantity = 1) => {
-    const numQty = parseFloat(quantity) || 1;
-    setBasket((prevBasket) => {
-      const existing = prevBasket.find((b) => b.produceId === produceId);
-      if (existing) {
-        return prevBasket.map((b) =>
-          b.produceId === produceId ? { ...b, quantity: Math.round((b.quantity + numQty) * 10) / 10 } : b
-        );
-      }
-      return [...prevBasket, { produceId, quantity: numQty }];
-    });
-    const item = produceList.find((p) => p.id === produceId);
-    showToast(`🛒 Added ${numQty} ${item?.unit || 'unit'} of ${item?.name || 'produce'} to your basket`);
-  };
-
-  const updateBasketQuantity = (produceId, quantity) => {
-    const num = parseFloat(quantity);
-    if (isNaN(num) || num <= 0) {
-      removeFromBasket(produceId);
-      return;
-    }
-    setBasket((prev) =>
-      prev.map((b) => (b.produceId === produceId ? { ...b, quantity: Math.round(num * 10) / 10 } : b))
-    );
-  };
-
-  const removeFromBasket = (produceId) => {
-    setBasket((prev) => prev.filter((b) => b.produceId !== produceId));
-  };
-
-  const clearBasket = () => {
-    setBasket([]);
-    showToast('Shopping basket cleared', 'info');
   };
 
   const addReview = ({ vendorId, author, rating, priceFairness, freshness, comment }) => {
@@ -226,23 +168,16 @@ export function MarketProvider({ children }) {
       });
     });
 
-    showToast('🌟 Review posted! Thank you for supporting honest vendors.');
+    showToast('🌟 Review posted! Thank you for supporting fair local markets.');
     return true;
   };
 
   const resetToFactoryData = () => {
     localStorage.removeItem(STORAGE_KEYS.PRODUCE);
     localStorage.removeItem(STORAGE_KEYS.VENDORS);
-    localStorage.removeItem(STORAGE_KEYS.BASKET);
     setProduceList(PRODUCE_ITEMS);
     setVendorsList(VENDORS);
-    setBasket([
-      { produceId: 'potato', quantity: 2 },
-      { produceId: 'onion', quantity: 1 },
-      { produceId: 'tomato', quantity: 1.5 },
-      { produceId: 'coriander', quantity: 1 },
-    ]);
-    showToast('Refreshed to authentic baseline market prices', 'info');
+    showToast('Refreshed to latest baseline market prices', 'info');
   };
 
   return (
@@ -254,11 +189,6 @@ export function MarketProvider({ children }) {
         currentMarket: getMarket(currentMarketId),
         produceList,
         vendorsList,
-        basket,
-        addToBasket,
-        updateBasketQuantity,
-        removeFromBasket,
-        clearBasket,
         addPriceReport,
         addReview,
         activeTab,
@@ -269,6 +199,8 @@ export function MarketProvider({ children }) {
         setCategoryFilter,
         selectedProduceForChecker,
         setSelectedProduceForChecker,
+        selectedProduceForCompare,
+        setSelectedProduceForCompare,
         toast,
         showToast,
         resetToFactoryData,

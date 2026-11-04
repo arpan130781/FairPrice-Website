@@ -4,9 +4,8 @@ import {
   TrendingDown,
   TrendingUp,
   Minus,
-  Plus,
   Scale,
-  ShoppingBag,
+  ArrowLeftRight,
   Store,
   ChevronDown,
   ChevronUp,
@@ -14,6 +13,7 @@ import {
   Clock,
   Sparkles,
   Info,
+  ShieldAlert,
 } from 'lucide-react';
 
 export default function PriceBoard({ onOpenContributeModal }) {
@@ -24,22 +24,21 @@ export default function PriceBoard({ onOpenContributeModal }) {
     categoryFilter,
     setCategoryFilter,
     searchTerm,
-    addToBasket,
     setActiveTab,
     setSelectedProduceForChecker,
+    setSelectedProduceForCompare,
   } = useMarket();
 
   const [expandedItemId, setExpandedItemId] = useState(null);
 
   const categories = [
-    { id: 'all', label: 'All Items', icon: '🧺' },
-    { id: 'vegetables', label: 'Vegetables', icon: '🥕' },
+    { id: 'all', label: 'All Groceries', icon: '🧺' },
+    { id: 'vegetables', label: 'Daily Vegetables', icon: '🥕' },
     { id: 'fruits', label: 'Fresh Fruits', icon: '🍎' },
     { id: 'leafy', label: 'Leafy Greens', icon: '🥬' },
     { id: 'herbs', label: 'Herbs & Seasoning', icon: '🧄' },
   ];
 
-  // Filter items
   const filteredItems = produceList.filter((item) => {
     const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
     const search = searchTerm.trim().toLowerCase();
@@ -56,9 +55,14 @@ export default function PriceBoard({ onOpenContributeModal }) {
     setExpandedItemId(expandedItemId === id ? null : id);
   };
 
-  const handleCheckQuote = (item) => {
+  const handleVerifyQuote = (item) => {
     setSelectedProduceForChecker(item.id);
     setActiveTab('checker');
+  };
+
+  const handleCompareMarkets = (item) => {
+    setSelectedProduceForCompare(item.id);
+    setActiveTab('compare');
   };
 
   return (
@@ -68,7 +72,7 @@ export default function PriceBoard({ onOpenContributeModal }) {
         <div className="market-hero-main">
           <div className="market-badge-row">
             <span className="live-status-pill">
-              <span className="pulse-indicator"></span> Verified Today's Mandai Rates
+              <span className="pulse-indicator"></span> Real-Time Mandai & Street Rates
             </span>
             <span className="city-pill">📍 {currentMarket.city}</span>
           </div>
@@ -76,27 +80,35 @@ export default function PriceBoard({ onOpenContributeModal }) {
           <p className="market-hero-desc">{currentMarket.description}</p>
           <div className="market-meta-row">
             <span className="market-meta-item">
-              <Store size={16} /> {currentMarket.totalVendors} physical retail stalls covered
+              <Store size={15} /> {currentMarket.totalVendors} local street vendors tracked
             </span>
             <span className="market-meta-item">
-              <Clock size={16} /> Rates refreshed daily between 6:00 AM – 8:30 AM
+              <Clock size={15} /> Daily price updates between 6:00 AM – 8:30 AM
             </span>
           </div>
         </div>
 
         <div className="market-hero-stats">
           <div className="hero-stat-box">
-            <span className="stat-label">Produce Tracked</span>
+            <span className="stat-label">Groceries Tracked</span>
             <span className="stat-value">{produceList.length} items</span>
             <span className="stat-sub">Updated morning batch</span>
           </div>
           <div className="hero-stat-box highlight-stat">
-            <span className="stat-label">Avg Overcharge Avoided</span>
-            <span className="stat-value">22% – 35%</span>
-            <span className="stat-sub">By checking before buying</span>
+            <span className="stat-label">Average Overcharge Risk</span>
+            <span className="stat-value">25% – 40%</span>
+            <span className="stat-sub">Without checking fair rates</span>
           </div>
         </div>
       </section>
+
+      {/* Non-commercial reminder banner */}
+      <div className="info-callout-banner">
+        <Info size={17} className="callout-icon" />
+        <span>
+          <strong>FairPrice is 100% free and informational:</strong> We do not sell or deliver anything. We publish dynamic daily street rates so you know exactly what produce should cost before you buy at your neighbourhood vendor.
+        </span>
+      </div>
 
       {/* Categories Bar */}
       <div className="category-chips-bar">
@@ -119,9 +131,9 @@ export default function PriceBoard({ onOpenContributeModal }) {
           {searchTerm && <span> matching "{searchTerm}"</span>}
         </div>
         <div className="legend-pills">
-          <span className="legend-chip min-pill">Min = Wholesale floor</span>
-          <span className="legend-chip avg-pill">Avg = Recommended Fair Price</span>
-          <span className="legend-chip max-pill">Max = Overprice threshold</span>
+          <span className="legend-chip min-pill">Lowest = Wholesale floor</span>
+          <span className="legend-chip avg-pill">Fair Avg = Recommended retail</span>
+          <span className="legend-chip max-pill">Highest = Overcharge limit</span>
         </div>
       </div>
 
@@ -129,15 +141,15 @@ export default function PriceBoard({ onOpenContributeModal }) {
       {filteredItems.length === 0 ? (
         <div className="empty-state-card">
           <div className="empty-icon">🔍</div>
-          <h3>No produce found matching your search</h3>
-          <p>Try searching for common names like "Tomato", "Aloo", "Palak", or switch categories.</p>
+          <h3>No groceries found matching your search</h3>
+          <p>Try searching for common names like "Tomato", "Pyaaz", "Aloo", "Apple", or clear your filter.</p>
           <button
             className="btn-reset-filters"
             onClick={() => {
               setCategoryFilter('all');
             }}
           >
-            Clear Filters
+            Show All Items
           </button>
         </div>
       ) : (
@@ -156,7 +168,6 @@ export default function PriceBoard({ onOpenContributeModal }) {
               (s) => s.marketId === currentMarketId || s.marketId === 'dadar'
             );
 
-            // Calculate percentage range
             const spread = priceInfo.max - priceInfo.min;
             const avgPosition = spread > 0 ? Math.round(((priceInfo.avg - priceInfo.min) / spread) * 100) : 50;
 
@@ -207,7 +218,7 @@ export default function PriceBoard({ onOpenContributeModal }) {
                   </div>
 
                   <div className="price-metric-box max-metric">
-                    <span className="metric-tag">High</span>
+                    <span className="metric-tag">Highest</span>
                     <span className="metric-price">₹{priceInfo.max}</span>
                     <span className="metric-sub">Don't pay above</span>
                   </div>
@@ -226,29 +237,29 @@ export default function PriceBoard({ onOpenContributeModal }) {
                   </div>
                   <div className="spread-labels-row">
                     <span>Floor ₹{priceInfo.min}</span>
-                    <span className="spread-center-label">Fair Average ₹{priceInfo.avg}</span>
+                    <span className="spread-center-label">Fair Avg ₹{priceInfo.avg}</span>
                     <span>Cap ₹{priceInfo.max}</span>
                   </div>
                 </div>
 
-                {/* Card Action Buttons */}
+                {/* Card Actions: Check Quote & Compare Across Markets */}
                 <div className="card-actions-row">
                   <button
                     className="btn-action-checker"
-                    onClick={() => handleCheckQuote(item)}
-                    title="Check vendor quote with introvert bargaining guide"
+                    onClick={() => handleVerifyQuote(item)}
+                    title="Check if your vendor's quote is fair"
                   >
-                    <Scale size={16} />
-                    <span>Check Quote</span>
+                    <Scale size={15} />
+                    <span>Verify Quote</span>
                   </button>
 
                   <button
-                    className="btn-action-basket"
-                    onClick={() => addToBasket(item.id, 1)}
-                    title="Add 1 unit to shopping basket"
+                    className="btn-action-compare"
+                    onClick={() => handleCompareMarkets(item)}
+                    title="Compare prices of this item across all Mumbai markets"
                   >
-                    <Plus size={16} />
-                    <span>Add to Basket</span>
+                    <ArrowLeftRight size={15} />
+                    <span>Compare Markets</span>
                   </button>
                 </div>
 
@@ -260,9 +271,9 @@ export default function PriceBoard({ onOpenContributeModal }) {
                       onClick={() => toggleExpand(item.id)}
                       aria-expanded={isExpanded}
                     >
-                      <Store size={15} />
-                      <span>{relevantShops.length} nearby stalls with recorded prices</span>
-                      {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      <Store size={14} />
+                      <span>{relevantShops.length} recorded stall rates in this market</span>
+                      {isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                     </button>
 
                     {isExpanded && (
@@ -295,11 +306,11 @@ export default function PriceBoard({ onOpenContributeModal }) {
       <div className="crowdsource-cta-banner">
         <div className="cta-left">
           <div className="cta-spark-badge">
-            <Sparkles size={16} /> Community Driven
+            <Sparkles size={15} /> Crowdsourced Transparency
           </div>
-          <h3>Bought veggies today at {currentMarket.name}?</h3>
+          <h3>Spotted different grocery rates at {currentMarket.name}?</h3>
           <p>
-            Help fellow shoppers and college students know the honest price. Report today's rate in 10 seconds!
+            Help fellow consumers and neighbours know today's honest rate. Submit the price you paid or saw in 10 seconds!
           </p>
         </div>
         <button className="btn-cta-submit" onClick={onOpenContributeModal}>
