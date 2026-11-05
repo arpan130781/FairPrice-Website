@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MarketProvider, useMarket } from './context/MarketContext';
 import Header from './components/Header';
 import MobileBottomNav from './components/MobileBottomNav';
+import DeviceViewSwitcher from './components/DeviceViewSwitcher';
 import PriceBoard from './components/PriceBoard';
 import MarketCompare from './components/MarketCompare';
 import FairPriceChecker from './components/FairPriceChecker';
@@ -9,14 +10,15 @@ import VendorDirectory from './components/VendorDirectory';
 import AboutProject from './components/AboutProject';
 import PriceContributionModal from './components/PriceContributionModal';
 import Toast from './components/Toast';
-import { RotateCcw, Activity } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
 
 function MainApp() {
   const { activeTab, resetToFactoryData } = useMarket();
   const [isContributeModalOpen, setIsContributeModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useState('responsive'); // 'responsive' | 'samsung-s25'
 
-  return (
-    <div className="app-root">
+  const appContent = (
+    <div className={`app-root ${viewMode === 'samsung-s25' ? 'samsung-s25-simulated' : ''}`}>
       <Header onOpenContributeModal={() => setIsContributeModalOpen(true)} />
 
       <main className="main-content-area">
@@ -75,6 +77,36 @@ function MainApp() {
         </div>
       </footer>
     </div>
+  );
+
+  return (
+    <>
+      <DeviceViewSwitcher viewMode={viewMode} setViewMode={setViewMode} />
+
+      {viewMode === 'samsung-s25' ? (
+        <div className="samsung-stage-backdrop">
+          <div className="samsung-s25-wrapper">
+            <div className="samsung-s25-device">
+              {/* Top speaker & camera hole punch */}
+              <div className="samsung-speaker"></div>
+              <div className="samsung-camera-hole"></div>
+
+              {/* Live screen */}
+              <div className="samsung-screen-container">
+                {appContent}
+              </div>
+
+              {/* Bottom Android gesture navigation bar */}
+              <div className="samsung-nav-bar">
+                <div className="samsung-nav-pill"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        appContent
+      )}
+    </>
   );
 }
 

@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
+    host: true, // Exposes on local network for testing on Samsung S25
   },
   test: {
     globals: true,

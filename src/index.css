@@ -3404,3 +3404,294 @@ input, select, textarea {
   }
 }
 
+
+/* ==========================================================================
+   Device View Switcher & Samsung Galaxy S25 Simulator Frame
+   ========================================================================== */
+
+.device-switcher-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10001;
+  pointer-events: auto;
+}
+
+.device-switcher-pill {
+  display: flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 5px 6px 5px 12px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  gap: 6px;
+}
+
+.switcher-label {
+  color: #94A3B8;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.switcher-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: #CBD5E1;
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.switcher-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.switcher-btn.active {
+  background: linear-gradient(135deg, var(--primary), var(--teal-accent));
+  color: #FFFFFF;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(8, 145, 178, 0.45);
+}
+
+/* Hide Device Switcher on actual mobile screens */
+@media (max-width: 768px) {
+  .device-switcher-container {
+    display: none !important;
+  }
+}
+
+/* Samsung S25 Backdrop Stage */
+.samsung-stage-backdrop {
+  min-height: 100vh;
+  background: radial-gradient(circle at 50% 30%, #1E293B 0%, #0F172A 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  box-sizing: border-box;
+}
+
+.samsung-s25-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.samsung-s25-device {
+  width: 384px;
+  height: 828px;
+  max-height: calc(100vh - 60px);
+  background: #000000;
+  border-radius: 46px;
+  box-shadow: 
+    0 0 0 10px #1E293B,
+    0 0 0 12px #334155,
+    0 35px 90px rgba(0, 0, 0, 0.7),
+    inset 0 0 4px rgba(255, 255, 255, 0.3);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 3px solid #0F172A;
+}
+
+/* Infinity-O camera hole punch */
+.samsung-camera-hole {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: #020617;
+  border-radius: 50%;
+  z-index: 10000;
+  box-shadow: inset 0 0 3px rgba(255, 255, 255, 0.25), 0 0 2px rgba(0, 0, 0, 0.9);
+}
+
+.samsung-speaker {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 3px;
+  background: #1E293B;
+  border-radius: 3px;
+  z-index: 10000;
+}
+
+/* Simulated Screen Container */
+.samsung-screen-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg-main);
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.samsung-screen-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.samsung-screen-container::-webkit-scrollbar-thumb {
+  background: rgba(8, 145, 178, 0.3);
+  border-radius: 4px;
+}
+
+/* Bottom Android Navigation Pill */
+.samsung-nav-bar {
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.samsung-nav-pill {
+  width: 90px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: var(--radius-full);
+}
+
+/* ==========================================================================
+   Rules applied specifically inside simulated Samsung S25 container
+   ========================================================================== */
+
+.samsung-s25-simulated {
+  padding-bottom: 74px !important;
+}
+
+.samsung-s25-simulated .nav-tabs-bar {
+  display: none !important;
+}
+
+.samsung-s25-simulated .mobile-bottom-nav {
+  display: block !important;
+  position: sticky;
+  bottom: 0;
+}
+
+.samsung-s25-simulated .top-announcement-bar {
+  padding: 4px 10px;
+  font-size: 0.7rem;
+}
+
+.samsung-s25-simulated .announcement-city {
+  display: none;
+}
+
+.samsung-s25-simulated .main-navbar {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  gap: 10px;
+}
+
+.samsung-s25-simulated .brand-logo {
+  order: 1;
+}
+
+.samsung-s25-simulated .brand-name {
+  font-size: 1.2rem;
+}
+
+.samsung-s25-simulated .brand-tagline {
+  font-size: 0.65rem;
+}
+
+.samsung-s25-simulated .navbar-right {
+  order: 2;
+}
+
+.samsung-s25-simulated .btn-contribute {
+  padding: 6px 12px;
+  font-size: 0.78rem;
+}
+
+.samsung-s25-simulated .market-selector-wrapper {
+  order: 3;
+  width: 100%;
+  flex: 1 1 100%;
+}
+
+.samsung-s25-simulated .search-bar-wrapper {
+  order: 4;
+  width: 100%;
+  flex: 1 1 100%;
+}
+
+.samsung-s25-simulated .market-hero-card {
+  padding: 16px 14px;
+  margin-bottom: 12px;
+}
+
+.samsung-s25-simulated .market-hero-title {
+  font-size: 1.3rem;
+}
+
+.samsung-s25-simulated .market-meta-row {
+  flex-direction: column;
+  gap: 4px;
+}
+
+.samsung-s25-simulated .market-hero-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+}
+
+.samsung-s25-simulated .produce-cards-grid {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.samsung-s25-simulated .produce-card {
+  padding: 14px 12px;
+}
+
+.samsung-s25-simulated .price-metric-boxes {
+  gap: 6px;
+}
+
+.samsung-s25-simulated .card-actions-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.samsung-s25-simulated .checker-layout-grid,
+.samsung-s25-simulated .markets-compare-grid,
+.samsung-s25-simulated .vendors-grid,
+.samsung-s25-simulated .compare-insights-row {
+  grid-template-columns: 1fr;
+}
+
+.samsung-s25-simulated .compare-header-card,
+.samsung-s25-simulated .compare-item-spotlight {
+  flex-direction: column;
+}
