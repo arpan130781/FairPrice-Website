@@ -2809,7 +2809,96 @@ input, select, textarea {
 }
 
 /* ==========================================================================
-   Responsive Breakpoints
+   Mobile Bottom Navigation Bar
+   ========================================================================== */
+
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-color);
+  box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
+  z-index: 1000;
+  padding-bottom: env(safe-area-inset-bottom, 8px);
+}
+
+.mobile-bottom-nav-inner {
+  max-width: 540px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  height: 58px;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.mobile-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 0;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: var(--radius-sm);
+  position: relative;
+}
+
+.mobile-nav-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.mobile-nav-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  transition: color 0.2s ease;
+}
+
+.mobile-nav-btn.active {
+  color: var(--primary);
+}
+
+.mobile-nav-btn.active .mobile-nav-icon-wrap {
+  transform: translateY(-2px);
+}
+
+.mobile-nav-btn.active .mobile-nav-label {
+  font-weight: 800;
+}
+
+.mobile-nav-btn:active {
+  transform: scale(0.92);
+}
+
+.verifier-dot {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 6px var(--primary);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints & Mobile Optimization
    ========================================================================== */
 
 @media (max-width: 900px) {
@@ -2832,38 +2921,486 @@ input, select, textarea {
   }
 }
 
-@media (max-width: 650px) {
-  .main-navbar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
+@media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: hidden;
+    width: 100%;
   }
 
-  .navbar-left {
+  .app-root {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom, 12px));
+  }
+
+  /* Switch from top tabs to mobile bottom navigation */
+  .nav-tabs-bar {
+    display: none;
+  }
+
+  .mobile-bottom-nav {
+    display: block;
+  }
+
+  /* Compact top announcement on mobile */
+  .top-announcement-bar {
+    padding: 4px 12px;
+    font-size: 0.72rem;
+  }
+
+  .announcement-content {
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+  }
+
+  .announcement-city {
+    display: none;
+  }
+
+  /* Mobile Navbar Layout: 3 clean rows */
+  .main-navbar {
+    flex-wrap: wrap;
     justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .brand-logo {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  .brand-name {
+    font-size: 1.25rem;
+  }
+
+  .brand-tagline {
+    font-size: 0.65rem;
+  }
+
+  .logo-icon-wrapper {
+    width: 34px;
+    height: 34px;
+  }
+
+  .brand-icon-symbol {
+    font-size: 18px;
+  }
+
+  .navbar-right {
+    order: 2;
+    flex: 0 0 auto;
+  }
+
+  .btn-contribute {
+    padding: 7px 12px;
+    font-size: 0.8rem;
+    gap: 5px;
+    box-shadow: none;
+  }
+
+  .market-selector-wrapper {
+    order: 3;
+    width: 100%;
+    flex: 1 1 100%;
+    max-width: 100%;
+    padding: 8px 12px;
+    background: #FFFFFF;
+    border-color: var(--primary-border);
+  }
+
+  .market-select {
+    width: 100%;
+    font-size: 16px; /* Avoid iOS auto-zoom */
+    text-overflow: ellipsis;
   }
 
   .search-bar-wrapper {
+    order: 4;
+    width: 100%;
+    flex: 1 1 100%;
     max-width: 100%;
   }
 
-  .produce-cards-grid,
-  .markets-compare-grid,
-  .vendors-grid {
-    grid-template-columns: 1fr;
+  .search-input {
+    font-size: 16px; /* Avoid iOS auto-zoom */
+    padding: 10px 36px 10px 38px;
   }
 
+  /* Main Content Area */
+  .main-content-area {
+    padding: 12px 12px;
+  }
+
+  /* Market Hero Card */
+  .market-hero-card {
+    padding: 16px 14px;
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+  }
+
+  .market-hero-title {
+    font-size: 1.35rem;
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+
+  .market-hero-desc {
+    font-size: 0.82rem;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+
+  .market-meta-row {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.75rem;
+  }
+
+  .market-hero-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .hero-stat-box {
+    min-width: auto;
+    padding: 10px 12px;
+  }
+
+  .stat-value {
+    font-size: 1.15rem;
+  }
+
+  .stat-label {
+    font-size: 0.68rem;
+  }
+
+  .stat-sub {
+    font-size: 0.65rem;
+  }
+
+  /* Informational Banner */
+  .info-callout-banner {
+    padding: 10px 12px;
+    font-size: 0.78rem;
+    gap: 8px;
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+  }
+
+  /* Category chips horizontal scroll */
+  .category-chips-bar {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    padding: 4px 2px 10px 2px;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .category-chips-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cat-chip-btn {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    white-space: nowrap;
+    padding: 7px 12px;
+    font-size: 0.8rem;
+  }
+
+  /* Produce Grid Header */
+  .board-results-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .results-count-text {
+    font-size: 0.82rem;
+  }
+
+  .legend-pills {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .legend-chip {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+  }
+
+  /* Produce Cards Grid */
+  .produce-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .produce-card {
+    padding: 14px 12px;
+    border-radius: var(--radius-md);
+  }
+
+  .card-top-row {
+    gap: 10px;
+  }
+
+  .produce-avatar-wrapper {
+    width: 42px;
+    height: 42px;
+  }
+
+  .produce-emoji {
+    font-size: 24px;
+  }
+
+  .produce-name {
+    font-size: 1.05rem;
+  }
+
+  .price-metric-boxes {
+    gap: 6px;
+  }
+
+  .metric-box {
+    padding: 8px 4px;
+  }
+
+  .metric-val {
+    font-size: 1.02rem;
+  }
+
+  .metric-label {
+    font-size: 0.65rem;
+  }
+
+  .card-actions-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .btn-action-verify,
+  .btn-action-compare {
+    width: 100%;
+    justify-content: center;
+    padding: 9px 6px;
+    font-size: 0.78rem;
+    min-height: 40px;
+  }
+
+  /* Compare Screen on Mobile */
+  .compare-header-card {
+    padding: 16px 14px;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .compare-select-wrapper {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .compare-dropdown {
+    font-size: 16px;
+    width: 100%;
+  }
+
+  .compare-item-spotlight {
+    flex-direction: column;
+    padding: 14px;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .btn-verify-this-item {
+    width: 100%;
+    justify-content: center;
+    min-height: 42px;
+  }
+
+  .compare-insights-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .markets-compare-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Fair Price Verifier on Mobile */
+  .checker-header-card {
+    padding: 16px 14px;
+  }
+
+  .checker-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .checker-calculator-panel {
+    padding: 16px 14px;
+  }
+
+  .form-input-lg {
+    font-size: 16px;
+  }
+
+  .verdict-hero-card {
+    padding: 16px 14px;
+  }
+
+  .script-lang-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+
+  .script-tab-btn {
+    padding: 8px 4px;
+    font-size: 0.75rem;
+    text-align: center;
+  }
+
+  .script-quote-box {
+    padding: 12px 12px;
+  }
+
+  .dialogue-text {
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
+  .btn-copy-script {
+    width: 100%;
+    justify-content: center;
+    min-height: 42px;
+  }
+
+  /* Vendor Directory on Mobile */
+  .vendor-filters-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .vendor-market-select,
+  .vendor-sort-select {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  .vendors-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .vendor-card {
+    padding: 14px 12px;
+  }
+
+  .btn-rate-vendor {
+    width: 100%;
+    justify-content: center;
+    min-height: 40px;
+  }
+
+  /* About Screen on Mobile */
+  .about-hero-card {
+    padding: 20px 14px;
+  }
+
+  .about-principles-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Modals as Mobile Bottom Sheets */
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-card {
+    max-width: 100%;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    padding: 20px 16px;
+    max-height: 85vh;
+    margin: 0;
+    animation: slide-up-sheet 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slide-up-sheet {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .form-select,
+  .form-input {
+    font-size: 16px;
+  }
+
+  .btn-submit-contrib {
+    min-height: 48px;
+    font-size: 0.95rem;
+  }
+
+  /* Crowdsource CTA Banner */
   .crowdsource-cta-banner {
     flex-direction: column;
     align-items: stretch;
+    padding: 18px 14px;
+  }
+
+  .cta-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Footer on Mobile */
+  .app-footer {
+    padding: 24px 14px calc(76px + env(safe-area-inset-bottom, 12px)) 14px;
   }
 
   .footer-content {
     flex-direction: column;
     align-items: flex-start;
+    gap: 14px;
   }
 
   .footer-right {
     align-items: flex-start;
+    gap: 10px;
   }
 }
+
+@media (max-width: 480px) {
+  .brand-tagline {
+    display: none;
+  }
+
+  .market-hero-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .price-metric-boxes {
+    gap: 4px;
+  }
+
+  .metric-val {
+    font-size: 0.95rem;
+  }
+
+  .metric-label {
+    font-size: 0.62rem;
+  }
+}
+

@@ -97,4 +97,16 @@ describe('FairPrice Application Suite', () => {
 
     expect(screen.getAllByText(/Bandra Pali Market/i).length).toBeGreaterThan(0);
   });
+
+  test('renders mobile bottom navigation bar with thumb-friendly tabs', () => {
+    render(<App />);
+
+    const mobileNav = screen.getByRole('navigation', { name: /Mobile Navigation/i });
+    expect(mobileNav).toBeInTheDocument();
+
+    const verifierBtn = screen.getByRole('button', { name: /^Verifier$/i });
+    fireEvent.click(verifierBtn);
+
+    expect(screen.getByText(/What to say to the vendor/i)).toBeInTheDocument();
+  });
 });

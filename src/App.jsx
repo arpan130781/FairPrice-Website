@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MarketProvider, useMarket } from './context/MarketContext';
 import Header from './components/Header';
+import MobileBottomNav from './components/MobileBottomNav';
 import PriceBoard from './components/PriceBoard';
 import MarketCompare from './components/MarketCompare';
 import FairPriceChecker from './components/FairPriceChecker';
@@ -36,6 +37,9 @@ function MainApp() {
         onClose={() => setIsContributeModalOpen(false)}
       />
       <Toast />
+
+      {/* Mobile Fixed Bottom Navigation */}
+      <MobileBottomNav />
 
       {/* Site Footer */}
       <footer className="app-footer">
