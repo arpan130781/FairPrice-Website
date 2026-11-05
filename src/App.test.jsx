@@ -109,4 +109,17 @@ describe('FairPrice Application Suite', () => {
 
     expect(screen.getByText(/What to say to the vendor/i)).toBeInTheDocument();
   });
+
+  test('supports universal device aspect ratio switcher across mobile, foldables, and laptop', () => {
+    render(<App />);
+
+    const switcherTrigger = screen.getByTitle(/Switch device aspect ratio/i);
+    expect(switcherTrigger).toBeInTheDocument();
+
+    fireEvent.click(switcherTrigger);
+
+    expect(screen.getByText(/Galaxy Fold 8 \/ Ultra/i)).toBeInTheDocument();
+    expect(screen.getByText(/Galaxy Flip 8 \/ Fold Cover/i)).toBeInTheDocument();
+    expect(screen.getByText(/iPhone Duo \/ Dual-Screen/i)).toBeInTheDocument();
+  });
 });

@@ -17,8 +17,27 @@ function MainApp() {
   const [isContributeModalOpen, setIsContributeModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState('responsive'); // 'responsive' | 'samsung-s25'
 
+  const isSimulated = viewMode !== 'responsive';
+
+  const getDeviceClass = () => {
+    switch (viewMode) {
+      case 'galaxy-fold-inner':
+        return 'device-galaxy-fold';
+      case 'galaxy-flip-tall':
+        return 'device-galaxy-flip';
+      case 'iphone-duo':
+        return 'device-iphone-duo';
+      default:
+        return 'device-samsung-s25';
+    }
+  };
+
   const appContent = (
-    <div className={`app-root ${viewMode === 'samsung-s25' ? 'samsung-s25-simulated' : ''}`}>
+    <div
+      className={`app-root ${
+        isSimulated ? `simulated-device ${getDeviceClass()}` : ''
+      }`}
+    >
       <Header onOpenContributeModal={() => setIsContributeModalOpen(true)} />
 
       <main className="main-content-area">
@@ -83,13 +102,17 @@ function MainApp() {
     <>
       <DeviceViewSwitcher viewMode={viewMode} setViewMode={setViewMode} />
 
-      {viewMode === 'samsung-s25' ? (
+      {isSimulated ? (
         <div className="samsung-stage-backdrop">
           <div className="samsung-s25-wrapper">
-            <div className="samsung-s25-device">
+            <div className={`samsung-s25-device ${getDeviceClass()}`}>
               {/* Top speaker & camera hole punch */}
               <div className="samsung-speaker"></div>
               <div className="samsung-camera-hole"></div>
+
+              {/* Fold Crease / Hinge Indicator if Foldable */}
+              {viewMode === 'galaxy-fold-inner' && <div className="fold-crease-guide" />}
+              {viewMode === 'iphone-duo' && <div className="duo-hinge-divider" />}
 
               {/* Live screen */}
               <div className="samsung-screen-container">

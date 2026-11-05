@@ -3406,64 +3406,211 @@ input, select, textarea {
 
 
 /* ==========================================================================
-   Device View Switcher & Samsung Galaxy S25 Simulator Frame
+   Universal Device View Switcher & Multi-Device Chassis Simulator
+   (Samsung Galaxy S25, Galaxy Fold 8, Flip 8, iPhone Duo, & Laptop)
    ========================================================================== */
 
 .device-switcher-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 24px;
+  right: 24px;
   z-index: 10001;
   pointer-events: auto;
 }
 
-.device-switcher-pill {
+.device-switcher-dropdown-wrap {
+  position: relative;
+}
+
+.device-switcher-pill-trigger {
   display: flex;
   align-items: center;
-  background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  padding: 5px 6px 5px 12px;
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 6px 14px 6px 8px;
   border-radius: var(--radius-full);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  gap: 6px;
-}
-
-.switcher-label {
-  color: #94A3B8;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.switcher-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: transparent;
-  color: #CBD5E1;
-  border: none;
-  padding: 6px 12px;
-  border-radius: var(--radius-full);
-  font-size: 0.76rem;
-  font-weight: 600;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  gap: 10px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #FFFFFF;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
 }
 
-.switcher-btn:hover {
-  color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.12);
+.device-switcher-pill-trigger:hover {
+  background: rgba(15, 23, 42, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+  border-color: rgba(6, 182, 212, 0.4);
 }
 
-.switcher-btn.active {
+.switcher-icon-wrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   background: linear-gradient(135deg, var(--primary), var(--teal-accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.4);
+}
+
+.switcher-text-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.switcher-active-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #F8FAFC;
+  line-height: 1.1;
+}
+
+.switcher-active-tag {
+  font-size: 0.64rem;
   font-weight: 700;
-  box-shadow: 0 2px 10px rgba(8, 145, 178, 0.45);
+  color: #38BDF8;
+}
+
+.switcher-arrow {
+  color: #94A3B8;
+  transition: transform 0.2s ease;
+}
+
+.switcher-arrow.open {
+  transform: rotate(180deg);
+}
+
+.device-switcher-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+}
+
+.device-menu-card {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  right: 0;
+  width: 320px;
+  background: #0F172A;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 10px;
+  z-index: 9999;
+  animation: slide-up-menu 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slide-up-menu {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.device-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px 10px 10px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.menu-sparkle-icon {
+  color: #38BDF8;
+}
+
+.device-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.device-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #E2E8F0;
+  transition: all 0.15s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.device-menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.device-menu-item.selected {
+  background: rgba(8, 145, 178, 0.2);
+  border: 1px solid rgba(8, 145, 178, 0.45);
+}
+
+.menu-item-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #38BDF8;
+  flex-shrink: 0;
+}
+
+.menu-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.menu-item-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.menu-item-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #F8FAFC;
+}
+
+.menu-item-tag {
+  font-size: 0.63rem;
+  font-weight: 700;
+  color: #06B6D4;
+  background: rgba(6, 182, 212, 0.15);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.menu-item-desc {
+  font-size: 0.67rem;
+  color: #94A3B8;
+  display: block;
+}
+
+.menu-check-pill {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  background: var(--primary);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
 }
 
 /* Hide Device Switcher on actual mobile screens */
@@ -3473,7 +3620,10 @@ input, select, textarea {
   }
 }
 
-/* Samsung S25 Backdrop Stage */
+/* ==========================================================================
+   Multi-Device Simulated Stage & Hardware Chassis
+   ========================================================================== */
+
 .samsung-stage-backdrop {
   min-height: 100vh;
   background: radial-gradient(circle at 50% 30%, #1E293B 0%, #0F172A 100%);
@@ -3491,21 +3641,64 @@ input, select, textarea {
 }
 
 .samsung-s25-device {
-  width: 384px;
-  height: 828px;
-  max-height: calc(100vh - 60px);
   background: #000000;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 3px solid #0F172A;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Preset: Samsung Galaxy S25 Base (19.5:9 Aspect Ratio) */
+.device-samsung-s25 {
+  width: 384px;
+  height: 832px;
+  max-height: calc(100vh - 60px);
   border-radius: 46px;
   box-shadow: 
     0 0 0 10px #1E293B,
     0 0 0 12px #334155,
     0 35px 90px rgba(0, 0, 0, 0.7),
     inset 0 0 4px rgba(255, 255, 255, 0.3);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 3px solid #0F172A;
+}
+
+/* Preset: Samsung Galaxy Flip 8 / Fold 8 Cover Screen (Ultra-Tall 22:9) */
+.device-galaxy-flip {
+  width: 340px;
+  height: 860px;
+  max-height: calc(100vh - 60px);
+  border-radius: 42px;
+  box-shadow: 
+    0 0 0 10px #1E293B,
+    0 0 0 12px #0E7490,
+    0 35px 90px rgba(0, 0, 0, 0.7),
+    inset 0 0 4px rgba(255, 255, 255, 0.3);
+}
+
+/* Preset: Samsung Galaxy Fold 8 / Fold 8 Ultra Unfolded (Expansive 6:5) */
+.device-galaxy-fold {
+  width: 768px;
+  height: 860px;
+  max-height: calc(100vh - 60px);
+  border-radius: 34px;
+  box-shadow: 
+    0 0 0 12px #1E293B,
+    0 0 0 14px #334155,
+    0 40px 100px rgba(0, 0, 0, 0.8),
+    inset 0 0 5px rgba(255, 255, 255, 0.35);
+}
+
+/* Preset: iPhone Duo / Dual-Screen Posture (3:2) */
+.device-iphone-duo {
+  width: 680px;
+  height: 740px;
+  max-height: calc(100vh - 60px);
+  border-radius: 30px;
+  box-shadow: 
+    0 0 0 12px #0F172A,
+    0 0 0 14px #1E293B,
+    0 35px 90px rgba(0, 0, 0, 0.75);
 }
 
 /* Infinity-O camera hole punch */
@@ -3532,6 +3725,35 @@ input, select, textarea {
   background: #1E293B;
   border-radius: 3px;
   z-index: 10000;
+}
+
+/* Fold Crease Guide for Galaxy Fold */
+.fold-crease-guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.12) 15%, rgba(255, 255, 255, 0.12) 85%, transparent);
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Dual-Screen Hinge Divider for iPhone Duo */
+.duo-hinge-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 6px;
+  transform: translateX(-50%);
+  background: #020617;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+  z-index: 9999;
 }
 
 /* Simulated Screen Container */
@@ -3577,33 +3799,33 @@ input, select, textarea {
 }
 
 /* ==========================================================================
-   Rules applied specifically inside simulated Samsung S25 container
+   Simulated Device Behavioral Rules
    ========================================================================== */
 
-.samsung-s25-simulated {
+.simulated-device {
   padding-bottom: 74px !important;
 }
 
-.samsung-s25-simulated .nav-tabs-bar {
+.simulated-device .nav-tabs-bar {
   display: none !important;
 }
 
-.samsung-s25-simulated .mobile-bottom-nav {
+.simulated-device .mobile-bottom-nav {
   display: block !important;
   position: sticky;
   bottom: 0;
 }
 
-.samsung-s25-simulated .top-announcement-bar {
+.simulated-device .top-announcement-bar {
   padding: 4px 10px;
   font-size: 0.7rem;
 }
 
-.samsung-s25-simulated .announcement-city {
+.simulated-device .announcement-city {
   display: none;
 }
 
-.samsung-s25-simulated .main-navbar {
+.simulated-device .main-navbar {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
@@ -3611,87 +3833,162 @@ input, select, textarea {
   gap: 10px;
 }
 
-.samsung-s25-simulated .brand-logo {
+.simulated-device .brand-logo {
   order: 1;
 }
 
-.samsung-s25-simulated .brand-name {
+.simulated-device .brand-name {
   font-size: 1.2rem;
 }
 
-.samsung-s25-simulated .brand-tagline {
+.simulated-device .brand-tagline {
   font-size: 0.65rem;
 }
 
-.samsung-s25-simulated .navbar-right {
+.simulated-device .navbar-right {
   order: 2;
 }
 
-.samsung-s25-simulated .btn-contribute {
+.simulated-device .btn-contribute {
   padding: 6px 12px;
   font-size: 0.78rem;
 }
 
-.samsung-s25-simulated .market-selector-wrapper {
+.simulated-device .market-selector-wrapper {
   order: 3;
   width: 100%;
   flex: 1 1 100%;
 }
 
-.samsung-s25-simulated .search-bar-wrapper {
+.simulated-device .search-bar-wrapper {
   order: 4;
   width: 100%;
   flex: 1 1 100%;
 }
 
-.samsung-s25-simulated .market-hero-card {
-  padding: 16px 14px;
-  margin-bottom: 12px;
+/* Fold 8 Inner & Duo (Expansive Wide Layout) */
+.simulated-device.device-galaxy-fold .produce-cards-grid,
+.simulated-device.device-iphone-duo .produce-cards-grid,
+.simulated-device.device-galaxy-fold .markets-compare-grid,
+.simulated-device.device-iphone-duo .markets-compare-grid,
+.simulated-device.device-galaxy-fold .vendors-grid,
+.simulated-device.device-iphone-duo .vendors-grid {
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 14px !important;
 }
 
-.samsung-s25-simulated .market-hero-title {
-  font-size: 1.3rem;
+.simulated-device.device-galaxy-fold .checker-layout-grid,
+.simulated-device.device-iphone-duo .checker-layout-grid {
+  grid-template-columns: 1fr 1.15fr !important;
+  gap: 16px !important;
 }
 
-.samsung-s25-simulated .market-meta-row {
-  flex-direction: column;
-  gap: 4px;
+.simulated-device.device-galaxy-fold .mobile-bottom-nav,
+.simulated-device.device-iphone-duo .mobile-bottom-nav {
+  max-width: 520px !important;
+  margin: 0 auto;
+  border-radius: 20px 20px 0 0;
 }
 
-.samsung-s25-simulated .market-hero-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  width: 100%;
+/* Flip 8 / Tall & Ultra-Narrow Layout */
+.simulated-device.device-galaxy-flip .produce-card {
+  padding: 10px 8px !important;
 }
 
-.samsung-s25-simulated .produce-cards-grid {
-  grid-template-columns: 1fr;
-  gap: 12px;
+.simulated-device.device-galaxy-flip .price-metric-boxes {
+  gap: 3px !important;
 }
 
-.samsung-s25-simulated .produce-card {
-  padding: 14px 12px;
+.simulated-device.device-galaxy-flip .metric-val {
+  font-size: 0.92rem !important;
 }
 
-.samsung-s25-simulated .price-metric-boxes {
-  gap: 6px;
+.simulated-device.device-galaxy-flip .metric-label {
+  font-size: 0.58rem !important;
 }
 
-.samsung-s25-simulated .card-actions-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+.simulated-device.device-galaxy-flip .brand-tagline {
+  display: none !important;
 }
 
-.samsung-s25-simulated .checker-layout-grid,
-.samsung-s25-simulated .markets-compare-grid,
-.samsung-s25-simulated .vendors-grid,
-.samsung-s25-simulated .compare-insights-row {
-  grid-template-columns: 1fr;
+/* ==========================================================================
+   Real Device Responsive Rules for Foldables & Dual-Screen Devices
+   ========================================================================== */
+
+/* Galaxy Fold Unfolded & iPad mini Real Devices */
+@media (min-width: 601px) and (max-width: 899px) {
+  .produce-cards-grid,
+  .markets-compare-grid,
+  .vendors-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .checker-layout-grid {
+    grid-template-columns: 1fr 1.15fr;
+    gap: 16px;
+  }
+
+  .mobile-bottom-nav {
+    max-width: 540px;
+    margin: 0 auto;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .market-hero-card {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .market-hero-stats {
+    width: auto;
+    display: flex;
+    gap: 10px;
+  }
 }
 
-.samsung-s25-simulated .compare-header-card,
-.samsung-s25-simulated .compare-item-spotlight {
-  flex-direction: column;
+/* Galaxy Fold Cover Screen / Flip Folded Real Devices (Width <= 350px) */
+@media (max-width: 350px) {
+  .main-content-area {
+    padding: 8px 6px;
+  }
+
+  .produce-card {
+    padding: 10px 8px;
+  }
+
+  .produce-name {
+    font-size: 0.95rem;
+  }
+
+  .brand-tagline {
+    display: none;
+  }
+
+  .price-metric-boxes {
+    gap: 3px;
+  }
+
+  .metric-box {
+    padding: 6px 2px;
+  }
+
+  .metric-val {
+    font-size: 0.9rem;
+  }
+
+  .metric-label {
+    font-size: 0.58rem;
+  }
+
+  .card-actions-row {
+    gap: 6px;
+  }
+
+  .btn-action-verify,
+  .btn-action-compare {
+    padding: 8px 2px;
+    font-size: 0.72rem;
+  }
 }
+
